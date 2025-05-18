@@ -1,0 +1,26 @@
+{
+  "name": "webdriverio_api_db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webdriverIO",
+    "api",
+    "db",
+    "e2e",
+    "cucumber"
+  ],
+  "author": "DJ",
+  "license": "ISC",
+  "description": "webdriverIO cucumber e2e",
+  "devDependencies": {
+    "@wdio/cli": "^9.13.0",
+    "@wdio/cucumber-framework": "^9.13.0",
+    "@wdio/local-runner": "^9.13.0",
+    "@wdio/spec-reporter": "^9.13.0",
+    "chai-webdriverio": "^1.0.0"
+  }
+}
