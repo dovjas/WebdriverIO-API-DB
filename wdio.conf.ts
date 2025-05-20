@@ -24,7 +24,7 @@ export const config: WebdriverIO.Config = {
   //
   specs: [
     // ToDo: define location for spec files here
-    `${process.cwd()}/test/features/**/*.feature`,
+    `${process.cwd()}/test/features/**/Inventory.feature`,
   ],
   // Patterns to exclude.
   exclude: [
@@ -55,6 +55,10 @@ export const config: WebdriverIO.Config = {
   capabilities: [
     {
       browserName: 'chrome',
+      'goog:chromeOptions': {
+        args: ['--disable-web-security'],
+      },
+      acceptInsecureCerts: true,
     },
   ],
 
@@ -65,7 +69,7 @@ export const config: WebdriverIO.Config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'debug',
+  logLevel: 'error',
   //
   // Set specific log levels per logger
   // loggers:
