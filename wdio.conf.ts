@@ -67,6 +67,7 @@ export const config: WebdriverIO.Config = {
         headless.toUpperCase() === 'Y'
           ? {
               args: [
+                '--headless=new',
                 '--profile-directory=Default',
                 '--disable-blink-features=AutomationControlled',
                 '--start-maximized',
