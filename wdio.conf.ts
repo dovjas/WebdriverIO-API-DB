@@ -67,7 +67,6 @@ export const config: WebdriverIO.Config = {
         headless.toUpperCase() === 'Y'
           ? {
               args: [
-                '--user-data-dir=C:\Users\KARINA\AppData\Local\Google\Chrome\User Data',
                 '--profile-directory=Default',
                 '--disable-blink-features=AutomationControlled',
                 '--start-maximized',
