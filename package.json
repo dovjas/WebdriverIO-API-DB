@@ -4,8 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "demo": "npx wdio wdio.conf.ts --cucumberOpts.tagExpression='@demo' ",
-    "smoke": "npx wdio wdio.conf.ts --cucumberOpts.tagExpression='@smoke' "
+    "test:debug": "set DEBUG=N && set HEADLESS=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo' ",
+    "test:demo": "set HEADLESS=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo' ",
+    "test:smoke": "set HEADLESS=Y && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@smoke' ",
+    "uat:demo": "set HEADLESS=N && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@demo' ",
+    "uat:smoke": "set HEADLESS=Y && npx wdio config/wdio.uat.conf.ts --cucumberOpts.tagExpression='@smoke' "
   },
   "keywords": [
     "webdriverIO",
@@ -18,10 +21,24 @@
   "license": "ISC",
   "description": "webdriverIO cucumber e2e",
   "devDependencies": {
+    "@types/supertest": "^6.0.3",
+    "@wdio/allure-reporter": "^9.14.0",
     "@wdio/cli": "^9.13.0",
     "@wdio/cucumber-framework": "^9.13.0",
     "@wdio/local-runner": "^9.13.0",
     "@wdio/spec-reporter": "^9.13.0",
-    "chai-webdriverio": "^1.0.0"
+    "allure": "^3.0.0-beta.13",
+    "chai-webdriverio": "^1.0.0",
+    "chromedriver": "^137.0.1",
+    "geckodriver": "^5.0.0",
+    "supertest": "^7.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "wdio-chromedriver-service": "^8.1.1",
+    "wdio-geckodriver-service": "^5.0.2",
+    "winston": "^3.17.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0"
   }
 }

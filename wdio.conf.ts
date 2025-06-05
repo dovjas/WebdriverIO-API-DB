@@ -1,3 +1,11 @@
+import allure from '@wdio/allure-reporter';
+import fs from 'fs';
+import dotenv from 'dotenv';
+dotenv.config();
+
+let headless = process.env.HEADLESS;
+let debug = process.env.DEBUG;
+console.log('Headed flag is: ', headless);
 export const config: WebdriverIO.Config = {
   //
   // ====================
@@ -24,7 +32,7 @@ export const config: WebdriverIO.Config = {
   //
   specs: [
     // ToDo: define location for spec files here
-    `${process.cwd()}/test/features/**/Inventory.feature`,
+    `${process.cwd()}/test/features/**/*.feature`,
   ],
   // Patterns to exclude.
   exclude: [
@@ -55,11 +63,38 @@ export const config: WebdriverIO.Config = {
   capabilities: [
     {
       browserName: 'chrome',
-      'goog:chromeOptions': {
-        args: ['--disable-web-security'],
-      },
+      'goog:chromeOptions':
+        headless.toUpperCase() === 'Y'
+          ? {
+              args: [
+                '--user-data-dir=C:\Users\KARINA\AppData\Local\Google\Chrome\User Data',
+                '--profile-directory=Default',
+                '--disable-blink-features=AutomationControlled',
+                '--start-maximized',
+                '--no-sandbox',
+                '--disable-infobars',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--ignore-certificate-errors',
+                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115 Safari/537.36',
+              ],
+              excludeSwitches: ['enable-automation'],
+              prefs: {
+                credentials_enable_service: false,
+                'profile.password_manager_enabled': false,
+              },
+            }
+          : {
+              args: [],
+            },
       acceptInsecureCerts: true,
     },
+    // You can uncomment and configure Firefox if needed later
+    // {
+    //   browserName: 'firefox',
+    //   acceptInsecureCerts: true,
+    //   timeouts: { implicit: 10000, pageLoad: 20000, script: 30000 },
+    // },
   ],
 
   //
@@ -69,7 +104,7 @@ export const config: WebdriverIO.Config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'error',
+  logLevel: debug.toLowerCase() === 'Y' ? 'info' : 'error',
   //
   // Set specific log levels per logger
   // loggers:
@@ -109,7 +144,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  // services: [],
+  services: ['geckodriver', 'chromedriver'],
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -132,7 +167,17 @@ export const config: WebdriverIO.Config = {
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
-  reporters: ['spec'],
+  reporters: [
+    'spec',
+    [
+      'allure',
+      {
+        outputDir: 'allure-results',
+        disableWebdriverStepsReporting: true,
+        useCucumberStepReporter: true,
+      },
+    ],
+  ],
 
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
@@ -155,7 +200,7 @@ export const config: WebdriverIO.Config = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: '@demo',
+    tagExpression: '@demo or @debug',
     // <number> timeout for step definitions
     timeout: 60000,
     // <boolean> Enable this config to treat undefined definitions as warnings.
@@ -175,8 +220,11 @@ export const config: WebdriverIO.Config = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {
-  // },
+  onPrepare: function (config, capabilities) {
+    if (process.env.RUNNER === 'LOCAL' && fs.existsSync('./allure-results')) {
+      fs.rmdirSync('./allure-results', { recursive: true });
+    }
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -238,8 +286,12 @@ export const config: WebdriverIO.Config = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {object}                 context  Cucumber World object
    */
-  // beforeScenario: function (world, context) {
-  // },
+  beforeScenario: function (world, context) {
+    console.log('World', world);
+    let arr = world.pickle.name.split(/:/);
+    //@ts-ignore
+    if (arr.length > 0) browser.options.testid = arr[0];
+  },
   /**
    *
    * Runs before a Cucumber Step.
@@ -260,8 +312,11 @@ export const config: WebdriverIO.Config = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {object}             context          Cucumber World object
    */
-  // afterStep: function (step, scenario, result, context) {
-  // },
+  afterStep: async function (step, scenario, result, context) {
+    if (!result.passed) {
+      await browser.takeScreenshot();
+    }
+  },
   /**
    *
    * Runs after a Cucumber Scenario.
@@ -280,8 +335,9 @@ export const config: WebdriverIO.Config = {
    * @param {string}                   uri      path to feature file
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
-  // afterFeature: function (uri, feature) {
-  // },
+  afterFeature: function (uri, feature) {
+    // allure.addEnvironment('Environment',browser.options.environment)
+  },
 
   /**
    * Runs after a WebdriverIO command gets executed
