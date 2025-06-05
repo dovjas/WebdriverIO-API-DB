@@ -27,5 +27,5 @@ jobs:
           node-version: 20.x
       - name: Install dependencies
         run: npm install
-      - name: Running smoke tests
-        run: npm run test:smoke
+      - name: Running debug tests
+        run: npm run test:debug
