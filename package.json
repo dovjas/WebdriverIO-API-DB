@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+     "test:ci": "HEADLESS=N DEBUG=N npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo'",
     "test:debug": "set DEBUG=N && set HEADLESS=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo' ",
     "test:demo": "set HEADLESS=N && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@demo' ",
     "test:smoke": "set HEADLESS=Y && npx wdio config/wdio.test.conf.ts --cucumberOpts.tagExpression='@smoke' ",
