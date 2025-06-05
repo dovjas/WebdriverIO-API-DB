@@ -28,4 +28,4 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Running debug tests
-        run: npm run test:debug
+        run: npm run test:ci
